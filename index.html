@@ -272,7 +272,15 @@ Color: brand navy (#1D316E/#122166) from the Grupo PAS logo for structure/total;
   tbody td{ padding:10px 10px; font-size:13.5px; vertical-align:top; }
   td.productor{ font-weight:600; max-width:280px; }
   td.compania{ font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace; font-size:12.5px; color:var(--ink-soft); white-space:nowrap; }
-  td.solicitud{ font-size:12.5px; color:var(--ink-soft); white-space:nowrap; }
+  td.solicitud{ white-space:nowrap; }
+  .sol-chip{
+    display:inline-block; font-size:11.5px; font-weight:600;
+    padding:4px 10px; border-radius:999px; white-space:nowrap;
+    border:1px solid transparent;
+  }
+  .sol-chip.sol-apertura{ color:#1D316E; background:#DCE5F7; border-color:#B9C8EA; }
+  .sol-chip.sol-otra{ color:#6B2E8C; background:#F0E3F7; border-color:#DCC2EA; }
+  .sol-chip.sol-none{ color:var(--muted); background:var(--muted-bg); }
   td.dates{ font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace; font-size:12px; color:var(--ink-soft); white-space:nowrap; }
   td.notes-toggle{ text-align:center; color:var(--brass); font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace; font-size:12px; white-space:nowrap; }
 
@@ -489,6 +497,13 @@ function renderStats(list){
   `).join('');
 }
 
+function solicitudClass(s){
+  const v = (s||'').trim().toLowerCase();
+  if(!v || v === 'sin especificar') return 'sol-none';
+  if(v.startsWith('apertura')) return 'sol-apertura';
+  return 'sol-otra';
+}
+
 function escapeHtml(s){
   return (s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
@@ -512,7 +527,7 @@ function renderTable(list){
     return `
       <tr class="${hasNotes ? 'has-notes' : ''}" ${hasNotes ? `onclick="toggleNotes('${rowId}')"` : ''}>
         <td class="productor">${escapeHtml(r.productor)}</td>
-        <td class="solicitud">${escapeHtml(r.solicitud) || '—'}</td>
+        <td class="solicitud"><span class="sol-chip ${solicitudClass(r.solicitud)}">${escapeHtml(r.solicitud) || '—'}</span></td>
         <td class="compania">${escapeHtml(r.compania)}</td>
         <td><span class="stamp ${stampClass}">${escapeHtml(r.estado)}</span></td>
         <td>${escapeHtml(r.comercial)}</td>
